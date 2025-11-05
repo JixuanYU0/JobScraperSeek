@@ -1,0 +1,159 @@
+# Seek Scraper Configuration
+
+scraper:
+  base_url: "https://www.seek.com.au"
+
+  # Classification to scrape
+  # This uses Seek's URL slug: /jobs-in-human-resources-recruitment
+  classification: "Human Resources & Recruitment"
+  classification_slug: "jobs-in-human-resources-recruitment"
+
+  # Date range filter (in days)
+  # 1 = Last 24 hours, 3 = Last 3 days, 7 = Last 7 days, 14 = Last 14 days, 31 = Last 31 days
+  # Set to null or 0 to disable date filtering (get all jobs)
+  date_range: 3
+
+  # Subclassification filter (IMPORTANT: This filters AT THE SOURCE)
+  # These IDs represent all HR subcategories EXCEPT "Recruitment - Agency"
+  # This is more efficient than filtering after scraping
+  # IDs: 6323,6322,6321,6318,6319,6320,6325,6326,6327,6328
+  # Common subcategories:
+  #   6318 = Consulting & Generalist HR
+  #   6319 = Health, Safety & Environment
+  #   6320 = Industrial & Employee Relations
+  #   6321 = Management - Internal
+  #   6322 = Organisational Development
+  #   6323 = Recruitment - Internal
+  #   6325 = Remuneration & Benefits
+  #   6326 = Training & Development
+  #   6327 = Work Health & Safety
+  #   6328 = Other
+  # Note: Recruitment - Agency (6324) is intentionally excluded
+  subclassification_ids: "6323,6322,6321,6318,6319,6320,6325,6326,6327,6328"
+
+  # Backup: Filter out jobs from these subcategories (for jobs that slip through)
+  excluded_subcategories:
+    - "Recruitment - Agency"
+
+  # Filter out jobs from these recruitment agency companies
+  excluded_companies:
+    # Major Agencies
+    - "Hays"
+    - "Hudson"
+    - "Michael Page"
+    - "Robert Walters"
+    - "Frazer Jones"
+    - "The Next Step"
+    - "Tandem Partners"
+    - "HR Partners"
+    - "Randstad"
+    - "Peoplecorp"
+    - "Beaumont People"
+    - "Davidson"
+    - "Six Degrees Executive"
+    - "Sharp & Carter"
+    - "u&u Recruitment Partners"
+    - "Slade Group"
+    - "Bluefin Resources"
+    - "FutureYou"
+    - "people2people"
+    - "Derwent"
+    - "SHK"
+    - "SHK Asia Pacific"
+
+    # Executive Search Firms
+    - "Korn Ferry"
+    - "Heidrick & Struggles"
+    - "Spencer Stuart"
+    - "Egon Zehnder"
+    - "NGS Global"
+    - "Watermark Search International"
+    - "Fisher Leadership"
+    - "Pacific Search Partners"
+
+    # Staffing & Temp Agencies
+    - "DFP Recruitment"
+    - "Ignite"
+    - "Candle"
+    - "Chandler Macleod"
+    - "Adecco"
+    - "ManpowerGroup"
+    - "Programmed"
+    - "Drake International"
+    - "Kelly Services"
+
+    # Specialist Recruiters
+    - "McArthur"
+    - "Public Sector People"
+    - "Rowben Consulting"
+    - "SustainAbility Consulting"
+    - "Talent International"
+    - "Paxus"
+    - "Salt Recruitment"
+    - "Morgan Consulting"
+    - "Kaizen Recruitment"
+    - "BWS Recruitment"
+    - "u&XL People"
+    - "TQSolutions"
+    - "etonHR"
+    - "Capability HR"
+    - "Levyl"
+    - "Robert Half"
+
+  # Scraping parameters
+  max_pages: 20
+  results_per_page: 30
+  request_timeout: 30
+  retry_attempts: 3
+  retry_delay: 5
+
+  # Browser settings (for Playwright)
+  headless: true
+  browser_type: "chromium"  # chromium, firefox, or webkit
+  user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+
+storage:
+  # Storage type: json, csv, airtable, postgres
+  type: "json"
+
+  # File storage settings
+  output_dir: "data"
+  json_file: "jobs_{date}.json"
+  csv_file: "jobs_{date}.csv"
+
+  # Airtable settings (for future use)
+  airtable:
+    api_key: "${AIRTABLE_API_KEY}"
+    base_id: "${AIRTABLE_BASE_ID}"
+    table_name: "Jobs"
+
+  # PostgreSQL settings (for future use)
+  postgres:
+    host: "${DB_HOST}"
+    port: 5432
+    database: "${DB_NAME}"
+    user: "${DB_USER}"
+    password: "${DB_PASSWORD}"
+
+scheduler:
+  # Run frequency in hours (24 = daily)
+  frequency_hours: 24
+
+  # Preferred run time (24-hour format)
+  run_time: "09:00"
+
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/scraper_{date}.log"
+  console: true
+
+deduplication:
+  # How to identify duplicates
+  key_field: "job_url"
+
+  # Keep track of seen jobs for N days
+  retention_days: 30
+
+  # Deduplication storage
+  seen_jobs_file: "data/seen_jobs.json"

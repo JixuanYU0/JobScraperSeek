@@ -1,0 +1,31 @@
+# Debug Configuration (visible browser)
+scraper:
+  base_url: "https://www.seek.com.au"
+  classification: "Human Resources & Recruitment"
+  classification_slug: "jobs-in-human-resources-recruitment"
+  date_range: 3
+  subclassification_ids: "6323,6322,6321,6318,6319,6320,6325,6326,6327,6328"
+  max_pages: 1
+  headless: false  # Show browser for debugging
+  browser_type: "chromium"
+  user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  excluded_subcategories:
+    - "Recruitment - Agency"
+  excluded_companies:
+    - "Hays"
+
+storage:
+  type: "json"
+  output_dir: "data"
+  json_file: "jobs_debug_{date}.json"
+
+logging:
+  level: "DEBUG"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/scraper_debug_{date}.log"
+  console: true
+
+deduplication:
+  key_field: "job_url"
+  retention_days: 30
+  seen_jobs_file: "data/seen_jobs_debug.json"

@@ -1,0 +1,25 @@
+2025-11-04 22:03:55,355 - seek_scraper - INFO - ============================================================
+2025-11-04 22:03:55,355 - seek_scraper - INFO - Seek Job Scraper - Starting
+2025-11-04 22:03:55,355 - seek_scraper - INFO - ============================================================
+2025-11-04 22:03:55,355 - seek_scraper - INFO - Starting scraping process...
+2025-11-04 22:03:55,355 - seek_scraper - INFO - Starting Seek scraper...
+2025-11-04 22:03:55,356 - seek_scraper - INFO - Using subclassification filter: 10 subcategories (excluding Recruitment - Agency at source)
+2025-11-04 22:03:55,356 - seek_scraper - INFO - Excluding 1 recruitment agencies by company name
+2025-11-04 22:03:57,515 - seek_scraper - INFO - Navigating to: https://www.seek.com.au/jobs-in-human-resources-recruitment?daterange=3&subclassification=6323%2C6322%2C6321%2C6318%2C6319%2C6320%2C6325%2C6326%2C6327%2C6328
+2025-11-04 22:04:00,058 - seek_scraper - INFO - Scraping page 1...
+2025-11-04 22:04:00,558 - seek_scraper - INFO - Found 22 jobs on page 1
+2025-11-04 22:04:00,560 - seek_scraper - INFO - No more pages to scrape
+2025-11-04 22:04:00,581 - seek_scraper - INFO - Total jobs scraped: 22
+2025-11-04 22:04:00,581 - seek_scraper - INFO - Saving to JSON...
+2025-11-04 22:04:00,581 - seek_scraper - INFO - ============================================================
+2025-11-04 22:04:00,582 - seek_scraper - INFO - Scraping completed successfully
+2025-11-04 22:04:00,582 - seek_scraper - INFO - Total jobs scraped: 22
+2025-11-04 22:04:00,582 - seek_scraper - INFO - Output format: json
+2025-11-04 22:04:00,582 - seek_scraper - INFO - ============================================================
+2025-11-04 22:04:00,582 - seek_scraper - INFO - 
+Sample job:
+2025-11-04 22:04:00,582 - seek_scraper - INFO -   Title: Human Resources Administrator​ (No Experience)
+2025-11-04 22:04:00,582 - seek_scraper - INFO -   Company: ADF Careers
+2025-11-04 22:04:00,582 - seek_scraper - INFO -   Location: Perth WA
+2025-11-04 22:04:00,582 - seek_scraper - INFO -   Subcategory: (Human Resources & Recruitment)
+2025-11-04 22:04:00,582 - seek_scraper - INFO -   URL: https://www.seek.com.au/job/88274152?type=promoted&ref=search-standalone&origin=cardTitle#sol=c2e4eb7ea45613c3991cfa5f75b2865af91b420b

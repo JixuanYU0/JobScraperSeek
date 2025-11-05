@@ -1,0 +1,97 @@
+# Test Configuration (limits to 1 page for quick testing)
+
+scraper:
+  base_url: "https://www.seek.com.au"
+  classification: "Human Resources & Recruitment"
+  classification_slug: "jobs-in-human-resources-recruitment"
+  date_range: 3
+  subclassification_ids: "6323,6322,6321,6318,6319,6320,6325,6326,6327,6328"
+
+  # TEST MODE: Only scrape 1 page
+  max_pages: 1
+  results_per_page: 30
+  request_timeout: 30
+  retry_attempts: 3
+  retry_delay: 5
+
+  # Browser settings
+  headless: true
+  browser_type: "chromium"
+  user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+
+  excluded_subcategories:
+    - "Recruitment - Agency"
+
+  excluded_companies:
+    - "Hays"
+    - "Hudson"
+    - "Michael Page"
+    - "Robert Walters"
+    - "Frazer Jones"
+    - "The Next Step"
+    - "Tandem Partners"
+    - "HR Partners"
+    - "Randstad"
+    - "Peoplecorp"
+    - "Beaumont People"
+    - "Davidson"
+    - "Six Degrees Executive"
+    - "Sharp & Carter"
+    - "u&u Recruitment Partners"
+    - "Slade Group"
+    - "Bluefin Resources"
+    - "FutureYou"
+    - "people2people"
+    - "Derwent"
+    - "SHK"
+    - "SHK Asia Pacific"
+    - "Korn Ferry"
+    - "Heidrick & Struggles"
+    - "Spencer Stuart"
+    - "Egon Zehnder"
+    - "NGS Global"
+    - "Watermark Search International"
+    - "Fisher Leadership"
+    - "Pacific Search Partners"
+    - "DFP Recruitment"
+    - "Ignite"
+    - "Candle"
+    - "Chandler Macleod"
+    - "Adecco"
+    - "ManpowerGroup"
+    - "Programmed"
+    - "Drake International"
+    - "Kelly Services"
+    - "McArthur"
+    - "Public Sector People"
+    - "Rowben Consulting"
+    - "SustainAbility Consulting"
+    - "Talent International"
+    - "Paxus"
+    - "Salt Recruitment"
+    - "Morgan Consulting"
+    - "Kaizen Recruitment"
+    - "BWS Recruitment"
+    - "u&XL People"
+    - "TQSolutions"
+    - "etonHR"
+    - "Capability HR"
+    - "Levyl"
+    - "Robert Half"
+
+storage:
+  type: "json"
+  output_dir: "data"
+  json_file: "jobs_test_{date}.json"
+  csv_file: "jobs_test_{date}.csv"
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/scraper_test_{date}.log"
+  console: true
+
+deduplication:
+  key_field: "job_url"
+  retention_days: 30
+  seen_jobs_file: "data/seen_jobs_test.json"
