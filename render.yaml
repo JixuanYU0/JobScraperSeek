@@ -3,8 +3,14 @@ services:
     name: seek-scraper-api
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt && playwright install chromium && playwright install-deps chromium
+    buildCommand: |
+      pip install -r requirements.txt
+      playwright install chromium
     startCommand: python3 api_server.py --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
+      - key: PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD
+        value: "0"
+      - key: PLAYWRIGHT_BROWSERS_PATH
+        value: "/opt/render/project/.playwright"
