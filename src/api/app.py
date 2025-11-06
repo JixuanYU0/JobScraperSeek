@@ -7,7 +7,8 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from .models import (
     ScrapeRequest, ScrapeResponse, ScrapeStatusResponse,
@@ -82,7 +83,7 @@ def create_app() -> FastAPI:
                 error=exc.__class__.__name__,
                 message=exc.detail,
                 timestamp=datetime.now()
-            ).model_dump()
+            ).model_dump(mode='json')
         )
 
     @app.exception_handler(Exception)
@@ -94,7 +95,7 @@ def create_app() -> FastAPI:
                 message="An unexpected error occurred",
                 detail=str(exc),
                 timestamp=datetime.now()
-            ).model_dump()
+            ).model_dump(mode='json')
         )
 
     # Health check endpoint
@@ -262,7 +263,7 @@ def create_app() -> FastAPI:
             )
 
             # Load all jobs
-            jobs = storage.load_all()
+            jobs = storage.load()
 
             # Apply filters
             if company:
@@ -317,7 +318,7 @@ def create_app() -> FastAPI:
                 seen_jobs_path=config.get_seen_jobs_path()
             )
 
-            jobs = storage.load_all()
+            jobs = storage.load()
             jobs.sort(key=lambda x: x.scraped_at, reverse=True)
 
             latest_jobs = jobs[:limit]
@@ -350,7 +351,7 @@ def create_app() -> FastAPI:
                 seen_jobs_path=config.get_seen_jobs_path()
             )
 
-            jobs = storage.load_all()
+            jobs = storage.load()
 
             for job in jobs:
                 if job.job_id == job_id:
@@ -441,6 +442,41 @@ def create_app() -> FastAPI:
             )
 
         return None
+
+    # Serve static frontend files
+    static_dir = Path(__file__).parent.parent.parent / "static"
+    index_file = static_dir / "index.html"
+
+    # Mount static assets directory
+    if (static_dir / "assets").exists():
+        app.mount("/assets", StaticFiles(directory=str(static_dir / "assets")), name="assets")
+
+    # Root and SPA routes - these catch all non-API requests
+    if index_file.exists():
+        # Import at function level to avoid circular imports
+        from fastapi.responses import HTMLResponse
+
+        # Root route
+        @app.get("/", response_class=HTMLResponse, include_in_schema=False)
+        async def read_root():
+            return index_file.read_text()
+
+        # Serve vite.svg
+        @app.get("/vite.svg", include_in_schema=False)
+        async def get_vite_svg():
+            svg_file = static_dir / "vite.svg"
+            if svg_file.exists():
+                return FileResponse(svg_file)
+            raise HTTPException(status_code=404)
+
+        # SPA catch-all for client-side routing
+        @app.get("/{catchall:path}", response_class=HTMLResponse, include_in_schema=False)
+        async def spa_catchall(catchall: str):
+            # Don't catch API routes
+            if catchall.startswith("api"):
+                raise HTTPException(status_code=404)
+            # Serve index.html for all other routes
+            return index_file.read_text()
 
     return app
 
