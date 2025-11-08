@@ -114,6 +114,12 @@ def main():
             csv_storage = CSVStorage(config.get_output_path("csv"))
             csv_storage.save(jobs)
 
+        # Cleanup old jobs (older than retention_days)
+        logger.info("Cleaning up old jobs...")
+        removed_count = json_storage.cleanup_old_jobs()
+        if removed_count > 0:
+            logger.info(f"Removed {removed_count} jobs older than {config.get('deduplication.retention_days', 30)} days")
+
         # Summary
         logger.info("=" * 60)
         logger.info("Scraping completed successfully")

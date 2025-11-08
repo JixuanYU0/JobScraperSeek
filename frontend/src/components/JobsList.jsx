@@ -29,7 +29,7 @@ function JobsList({ jobs, onRefresh }) {
       job.location,
       job.salary || 'N/A',
       job.job_type || 'N/A',
-      job.url,
+      job.job_url,
       new Date(job.scraped_at).toLocaleString()
     ]);
 

@@ -36,6 +36,7 @@ scraper:
     - "Recruitment - Agency"
 
   # Filter out jobs from these recruitment agency companies
+  # "recruitment" "agency" both 
   excluded_companies:
     # Major Agencies
     - "Hays"
@@ -99,9 +100,12 @@ scraper:
     - "Capability HR"
     - "Levyl"
     - "Robert Half"
+    - "Lead HR Pty Ltd"
+    - "u&u. Recruitment Partners"
+    - "The Unforgettable Agency"
 
   # Scraping parameters
-  max_pages: 20
+  max_pages: null  # Set to null to scrape ALL pages (no limit)
   results_per_page: 30
   request_timeout: 30
   retry_attempts: 3

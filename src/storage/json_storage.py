@@ -110,3 +110,35 @@ class JSONStorage(BaseStorage):
             json.dump(seen_jobs, f, indent=2)
 
         self.logger.debug(f"Updated seen jobs. Total tracked: {len(seen_jobs)}")
+
+    def cleanup_old_jobs(self) -> int:
+        """Remove jobs older than retention_days from the database.
+
+        Returns:
+            Number of jobs removed
+        """
+        jobs = self.load()
+
+        if not jobs:
+            return 0
+
+        # Calculate cutoff date
+        cutoff_date = datetime.now() - timedelta(days=self.retention_days)
+
+        # Filter out old jobs
+        original_count = len(jobs)
+        recent_jobs = [
+            job for job in jobs
+            if datetime.fromisoformat(job.scraped_at) > cutoff_date
+        ]
+
+        removed_count = original_count - len(recent_jobs)
+
+        if removed_count > 0:
+            # Save filtered jobs back to file
+            self.save(recent_jobs)
+            self.logger.info(f"Cleaned up {removed_count} jobs older than {self.retention_days} days")
+        else:
+            self.logger.info(f"No jobs older than {self.retention_days} days to clean up")
+
+        return removed_count

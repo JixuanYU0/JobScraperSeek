@@ -309,6 +309,12 @@ class SeekScraper:
                 self.logger.debug(f"Excluded by subcategory '{excluded}': {job.title}")
                 return False
 
+        # Check if company name contains BOTH "recruitment" AND "agency" (case-insensitive)
+        company_lower = job.company.lower()
+        if "recruitment" in company_lower and "agency" in company_lower:
+            self.logger.debug(f"Excluded by keyword filter (recruitment + agency): {job.title} at {job.company}")
+            return False
+
         # Check if company is in excluded list (case-insensitive partial match)
         for excluded_company in self.excluded_companies:
             if excluded_company.lower() in job.company.lower():
@@ -327,14 +333,33 @@ class SeekScraper:
             True if navigation succeeded
         """
         try:
-            # Look for next page button
-            next_button = page.query_selector('a[data-automation="page-next"]')
+            # Look for next page button with multiple selectors
+            selectors = [
+                'a[data-automation="page-next"]',
+                'a[aria-label="Next"]',
+                'nav[data-automation="pagination"] a:has-text("Next")',
+                'button:has-text("Next")',
+                'a.next',
+                '[rel="next"]'
+            ]
 
-            if next_button and next_button.is_visible():
-                next_button.click()
-                page.wait_for_load_state("domcontentloaded")
-                return True
+            for selector in selectors:
+                self.logger.debug(f"Trying selector: {selector}")
+                next_button = page.query_selector(selector)
 
+                if next_button:
+                    self.logger.debug(f"Found next button with selector: {selector}")
+                    is_visible = next_button.is_visible()
+                    self.logger.debug(f"Button visible: {is_visible}")
+
+                    if is_visible:
+                        self.logger.info(f"Clicking next page button")
+                        next_button.click()
+                        page.wait_for_load_state("domcontentloaded")
+                        time.sleep(2)  # Wait for new content to load
+                        return True
+
+            self.logger.debug("No next page button found with any selector")
             return False
 
         except Exception as e:

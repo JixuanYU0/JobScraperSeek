@@ -13,6 +13,24 @@ function JobCard({ job }) {
     return date.toLocaleDateString();
   };
 
+  const getPostAgeInfo = (postedDate) => {
+    // Extract days from "3d ago" format
+    if (!postedDate) return { label: 'Unknown', class: 'badge-gray' };
+
+    const match = postedDate.match(/(\d+)d ago/);
+    if (match) {
+      const days = parseInt(match[1]);
+      if (days === 1) return { label: 'Posted today', class: 'badge-new' };
+      if (days === 2) return { label: 'Posted 1 day ago', class: 'badge-recent' };
+      if (days === 3) return { label: 'Posted 2 days ago', class: 'badge-older' };
+      return { label: `Posted ${days-1} days ago`, class: 'badge-old' };
+    }
+
+    return { label: postedDate, class: 'badge-gray' };
+  };
+
+  const postAge = getPostAgeInfo(job.posted_date);
+
   return (
     <div className="job-card">
       <div className="job-card-header">
@@ -21,7 +39,10 @@ function JobCard({ job }) {
             {job.title}
           </a>
         </h3>
-        <span className="job-time">{formatDate(job.scraped_at)}</span>
+        <div className="job-badges">
+          <span className={`job-age-badge ${postAge.class}`}>{postAge.label}</span>
+          <span className="job-time">{formatDate(job.scraped_at)}</span>
+        </div>
       </div>
 
       <div className="job-company">

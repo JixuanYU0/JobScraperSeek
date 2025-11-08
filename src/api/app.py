@@ -308,7 +308,7 @@ def create_app() -> FastAPI:
         description="Retrieve the most recently scraped jobs"
     )
     async def get_latest_jobs(
-        limit: int = Query(20, ge=1, le=100, description="Number of jobs to return")
+        limit: int = Query(1000, ge=1, le=5000, description="Number of jobs to return")
     ):
         """Get the latest scraped jobs."""
         try:

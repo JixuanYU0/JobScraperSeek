@@ -20,7 +20,7 @@ function App() {
   const fetchJobs = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/api/v1/jobs/latest?limit=100`);
+      const response = await fetch(`${API_URL}/api/v1/jobs/latest?limit=1000`);
       if (!response.ok) throw new Error('Failed to fetch jobs');
       const data = await response.json();
       setJobs(data);
