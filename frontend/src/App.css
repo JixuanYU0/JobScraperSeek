@@ -463,6 +463,11 @@
   color: white;
 }
 
+.badge-very-old {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
 .badge-gray {
   background: #e5e7eb;
   color: #6b7280;

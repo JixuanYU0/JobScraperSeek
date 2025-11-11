@@ -13,23 +13,23 @@ function JobCard({ job }) {
     return date.toLocaleDateString();
   };
 
-  const getPostAgeInfo = (postedDate) => {
-    // Extract days from "3d ago" format
-    if (!postedDate) return { label: 'Unknown', class: 'badge-gray' };
+  const getScrapedBadge = (scrapedAt) => {
+    // Show when we scraped this job (badge shows scrape freshness)
+    if (!scrapedAt) return { label: 'Unknown', class: 'badge-gray' };
 
-    const match = postedDate.match(/(\d+)d ago/);
-    if (match) {
-      const days = parseInt(match[1]);
-      if (days === 1) return { label: 'Posted today', class: 'badge-new' };
-      if (days === 2) return { label: 'Posted 1 day ago', class: 'badge-recent' };
-      if (days === 3) return { label: 'Posted 2 days ago', class: 'badge-older' };
-      return { label: `Posted ${days-1} days ago`, class: 'badge-old' };
-    }
+    const scrapedDate = new Date(scrapedAt);
+    const now = new Date();
+    const daysSinceScraped = Math.floor((now - scrapedDate) / (1000 * 60 * 60 * 24));
 
-    return { label: postedDate, class: 'badge-gray' };
+    if (daysSinceScraped === 0) return { label: 'Scraped today', class: 'badge-new' };
+    if (daysSinceScraped === 1) return { label: 'Scraped yesterday', class: 'badge-recent' };
+    if (daysSinceScraped === 2) return { label: 'Scraped 2 days ago', class: 'badge-older' };
+    if (daysSinceScraped <= 7) return { label: `Scraped ${daysSinceScraped} days ago`, class: 'badge-old' };
+
+    return { label: `Scraped ${daysSinceScraped} days ago`, class: 'badge-very-old' };
   };
 
-  const postAge = getPostAgeInfo(job.posted_date);
+  const scrapedBadge = getScrapedBadge(job.scraped_at);
 
   return (
     <div className="job-card">
@@ -40,8 +40,8 @@ function JobCard({ job }) {
           </a>
         </h3>
         <div className="job-badges">
-          <span className={`job-age-badge ${postAge.class}`}>{postAge.label}</span>
-          <span className="job-time">{formatDate(job.scraped_at)}</span>
+          <span className={`job-age-badge ${scrapedBadge.class}`}>{scrapedBadge.label}</span>
+          <span className="job-time">Posted: {job.posted_date}</span>
         </div>
       </div>
 
