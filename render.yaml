@@ -11,6 +11,9 @@ services:
     buildCommand: |
       pip install -r requirements.txt
       playwright install --with-deps chromium
+      echo "Checking for data/jobs.json..."
+      ls -lh data/jobs.json || echo "WARNING: jobs.json not found!"
+      if [ -f data/jobs.json ]; then echo "✓ jobs.json exists ($(wc -l < data/jobs.json) lines)"; fi
     startCommand: python api_server.py --port $PORT
     healthCheckPath: /api/v1/health
     envVars:
