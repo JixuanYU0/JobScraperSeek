@@ -40,10 +40,14 @@ jobs:
         run: |
           if git diff --quiet data/jobs.json; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "new_jobs_count=0" >> $GITHUB_OUTPUT
             echo "No new jobs found"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            NEW_JOBS=$(git diff data/jobs.json | grep -c "^\+.*job_id" || echo "0")
+            NEW_JOBS=$(git diff data/jobs.json | grep -c "^\+.*job_id" || true)
+            if [ -z "$NEW_JOBS" ] || [ "$NEW_JOBS" = "0" ]; then
+              NEW_JOBS="unknown"
+            fi
             echo "new_jobs_count=$NEW_JOBS" >> $GITHUB_OUTPUT
             echo "Found $NEW_JOBS new jobs"
           fi
@@ -58,7 +62,7 @@ jobs:
 
           Scraped by GitHub Actions workflow
 
-          Automated scrape"
+          🤖 Automated scrape"
           git push
 
       - name: No changes found
