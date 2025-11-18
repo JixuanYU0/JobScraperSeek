@@ -157,7 +157,8 @@ deduplication:
   key_field: "job_url"
 
   # Keep track of seen jobs for N days
-  retention_days: 30
+  # Set to 3 days to match the UI requirement (show jobs from last 3 days)
+  retention_days: 3
 
   # Deduplication storage
   seen_jobs_file: "data/seen_jobs.json"
