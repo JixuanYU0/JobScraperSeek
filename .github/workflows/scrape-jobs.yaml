@@ -1,9 +1,12 @@
 name: Scrape Jobs Daily
 
 on:
-  # Run every day at 2:00 AM UTC (off-peak hours)
+  # Run every day at 6:00 AM Australian Eastern Time
+  # Note: GitHub Actions uses UTC, so we convert Australian time to UTC
+  # AEDT (UTC+11): 6 AM AEDT = 7 PM UTC (Nov-Mar)
+  # AEST (UTC+10): 6 AM AEST = 8 PM UTC (Apr-Oct)
   schedule:
-    - cron: '0 2 * * *'  # Every day at 2:00 AM UTC
+    - cron: '0 19 * * *'  # Every day at 6:00 AM Australian Eastern Time (approximately)
 
   # Allow manual trigger from GitHub Actions UI
   workflow_dispatch:
