@@ -32,7 +32,7 @@ services:
       cd frontend
       npm install
       npm run build
-    staticPublishPath: ./frontend/dist
+    staticPublishPath: ./static
     pullRequestPreviewsEnabled: false
     headers:
       - path: /*
