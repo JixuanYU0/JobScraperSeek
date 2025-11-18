@@ -6,8 +6,37 @@ function JobsList({ jobs, onRefresh }) {
   const [filterLocation, setFilterLocation] = useState('');
   const [filterJobType, setFilterJobType] = useState('');
 
-  // Extract unique locations and job types for filters
-  const uniqueLocations = [...new Set(jobs.map(job => job.location))].filter(Boolean).sort();
+  // Helper function to extract state/region from location
+  const getLocationRegion = (location) => {
+    if (!location) return 'Unknown';
+
+    // Check if location already contains state abbreviation
+    const stateMatch = location.match(/\b(NSW|VIC|QLD|SA|WA|TAS|NT|ACT)\b/i);
+    if (stateMatch) {
+      return stateMatch[1].toUpperCase();
+    }
+
+    // Map common cities to states
+    const cityToState = {
+      'Sydney': 'NSW', 'Melbourne': 'VIC', 'Brisbane': 'QLD',
+      'Adelaide': 'SA', 'Perth': 'WA', 'Hobart': 'TAS',
+      'Darwin': 'NT', 'Canberra': 'ACT'
+    };
+
+    for (const [city, state] of Object.entries(cityToState)) {
+      if (location.toLowerCase().includes(city.toLowerCase())) {
+        return state;
+      }
+    }
+
+    // Return the full location if we can't determine state
+    return location;
+  };
+
+  // Extract unique regions/states for location filter
+  const locationRegions = [...new Set(jobs.map(job => getLocationRegion(job.location)))].filter(Boolean).sort();
+
+  // Extract unique job types for filter
   const uniqueJobTypes = [...new Set(jobs.map(job => job.job_type))].filter(Boolean).sort();
 
   // Filter jobs
@@ -16,10 +45,14 @@ function JobsList({ jobs, onRefresh }) {
     const matchesSearch = !searchTerm ||
                          job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         job.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (job.location && job.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
                          (job.description && job.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesLocation = !filterLocation || job.location === filterLocation;
+    // Location filter: match by region/state OR full location string
+    const matchesLocation = !filterLocation ||
+                           getLocationRegion(job.location) === filterLocation ||
+                           (job.location && job.location.toLowerCase().includes(filterLocation.toLowerCase()));
+
     const matchesJobType = !filterJobType || job.job_type === filterJobType;
 
     return matchesSearch && matchesLocation && matchesJobType;
@@ -70,8 +103,8 @@ function JobsList({ jobs, onRefresh }) {
             className="filter-select"
           >
             <option value="">All Locations</option>
-            {uniqueLocations.map(loc => (
-              <option key={loc} value={loc}>{loc}</option>
+            {locationRegions.map(region => (
+              <option key={region} value={region}>{region}</option>
             ))}
           </select>
 
