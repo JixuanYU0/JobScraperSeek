@@ -288,6 +288,10 @@ class SeekScraper:
             )
             description = description_elem.inner_text().strip() if description_elem else None
 
+            # If job_type is null, try to infer from description and salary
+            if job_type is None and description:
+                job_type = self._infer_job_type(description, salary)
+
             return Job(
                 title=title,
                 company=company,
@@ -304,6 +308,47 @@ class SeekScraper:
         except Exception as e:
             self.logger.error(f"Error parsing job card: {e}")
             return None
+
+    def _infer_job_type(self, description: str, salary: str = None) -> str:
+        """Infer job type from description and salary text.
+
+        Args:
+            description: Job description text
+            salary: Salary text (optional)
+
+        Returns:
+            Inferred job type or None
+        """
+        if not description:
+            return None
+
+        # Combine description and salary for analysis
+        text = description.lower()
+        if salary:
+            text += " " + salary.lower()
+
+        # Check for contract/temp keywords first (highest priority)
+        contract_keywords = ['contract', 'contractor', 'temp', 'temporary', 'fixed term', 'fixed-term']
+        if any(keyword in text for keyword in contract_keywords):
+            return "Contract/Temp"
+
+        # Check for casual keywords
+        casual_keywords = ['casual', 'vacation', 'on call', 'on-call', 'relief', 'fill-in']
+        if any(keyword in text for keyword in casual_keywords):
+            return "Casual"
+
+        # Check for part-time keywords
+        part_time_keywords = ['part time', 'part-time', 'p/t', 'pt ', 'parttime']
+        if any(keyword in text for keyword in part_time_keywords):
+            return "Part-time"
+
+        # Check for full-time keywords
+        full_time_keywords = ['full time', 'full-time', 'f/t', 'ft ', 'fulltime', 'permanent', 'ongoing']
+        if any(keyword in text for keyword in full_time_keywords):
+            return "Full-time"
+
+        # Default to Full-time if no specific type is mentioned (most common)
+        return "Full-time"
 
     def _should_include_job(self, job: Job) -> bool:
         """Check if job should be included based on filters.
