@@ -48,11 +48,11 @@ function JobsList({ jobs, onRefresh }) {
                          (job.location && job.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
                          (job.description && job.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    // Location filter: match by region/state OR full location string
+    // Location filter: match by region/state only
     const matchesLocation = !filterLocation ||
-                           getLocationRegion(job.location) === filterLocation ||
-                           (job.location && job.location.toLowerCase().includes(filterLocation.toLowerCase()));
+                           getLocationRegion(job.location) === filterLocation;
 
+    // Job type filter: exact match
     const matchesJobType = !filterJobType || job.job_type === filterJobType;
 
     return matchesSearch && matchesLocation && matchesJobType;
