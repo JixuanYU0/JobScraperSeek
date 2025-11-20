@@ -29,8 +29,8 @@ function JobsList({ jobs, onRefresh }) {
       }
     }
 
-    // Return the full location if we can't determine state
-    return location;
+    // Return 'Other' if we can't determine state
+    return 'Other';
   };
 
   // Extract unique regions/states for location filter
