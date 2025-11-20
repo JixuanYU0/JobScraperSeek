@@ -24,6 +24,7 @@ class JobResponse(BaseModel):
     job_url: str
     posted_date: Optional[str] = None
     salary: Optional[str] = None
+    job_type: Optional[str] = None
     description: Optional[str] = None
     scraped_at: str
     job_id: Optional[str] = None
